@@ -5,7 +5,7 @@ import edu.upc.dsa.util.QueryHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+/*
 public class InsertTest {
     @Test
     public void testQueryINSERT() {
@@ -27,5 +27,6 @@ public class InsertTest {
         //this.btr.addEmployee("Laia","Munoz",9000);
         //this.btr.clear();
     }
-    */
+
 }
+*/

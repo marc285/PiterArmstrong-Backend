@@ -1,5 +1,5 @@
 package edu.upc.dsa;
-/**
+
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jersey.listing.ApiListingResourceJSON;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -13,15 +13,15 @@ import java.net.URI;
 /**
  * Main class.
  *
- //poner * barra
+ */
 public class Start {
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/dsaApp/";
+    public static final String BASE_URI = "http://localhost:8080/dsaApp";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
      * @return Grizzly HTTP server.
-     // poner * barra
+     */
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in edu.upc.dsa package
@@ -53,7 +53,7 @@ public class Start {
      * Main method.
      * @param args
      * @throws IOException
-
+     */
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
 
@@ -68,4 +68,3 @@ public class Start {
         server.stop();
     }
 }
-*/
