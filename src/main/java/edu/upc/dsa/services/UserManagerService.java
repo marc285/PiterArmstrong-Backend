@@ -35,7 +35,7 @@ public class UserManagerService {
     }
 
 
-    @GET
+    @POST
     @ApiOperation(value = "Login", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful", response = User.class),
@@ -48,7 +48,7 @@ public class UserManagerService {
             User userout = this.us.loginUser(userin);
             return Response.status(200).entity(userout).build();
         }
-        catch (UserNotFoundException e) { //(userout == null             ???????????  Quitar las exceptions)
+        catch (UserNotFoundException e) { //(userout == null             ???????????  Quitar las exceptions
             return Response.status(404).build();
         }
     }
