@@ -1,3 +1,18 @@
 .container{
     margin-top: 80px;
 }
+h1{
+    display: inline;
+}
+
+.user-btn{
+    background-color: white;
+    width: 50px;
+    height: 24px;
+    margin-top: 0px;
+    margin-bottom: 40px;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    font-size: 24px;
+}

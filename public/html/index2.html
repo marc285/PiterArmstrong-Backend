@@ -33,32 +33,40 @@
       </nav>
 
       <div class="container">
-        <h1>Estadísticas:</h1>
+        <h1>Estadísticas</h1>
+        <div class="btn-group">
+          <button type="button" id="username" class="btn user-btn"><script type ="text/javascript">
+            document.getElementById("username").innerHTML = window.localStorage.getItem("username");
+          </script></button>
+        </div>
+        <h1>:</h1>
+        <br>
         <br>
         <table class="table table-primary table-striped">
           <thead>
-            <tr>
-              <th>Salud</th>
-              <th>Defensa</th>
-              <th>Ataque</th>
-              <th>Dinero</th>
-              <th>Piezas</th>
-            </tr>
+          <tr>
+            <th>Vida</th>
+            <th>Defensa</th>
+            <th>Ataque</th>
+            <th>Dinero</th>
+            <th>Piezas</th>
+            <th>Pantalla</th>
+          </tr>
           </thead>
           <tbody>
-            
-             <tr class="table-primary">
-                       
-            </tr>
-            <tr class="table-light">
-      
-            </tr>
-            <tr class="table-primary">
-              
-            </tr>
-            <tr class="table-light">
-              </tr>
-         
+
+          <tr class="table-primary">
+
+          </tr>
+          <tr class="table-light">
+
+          </tr>
+          <tr class="table-primary">
+
+          </tr>
+          <tr class="table-light">
+          </tr>
+
           </tbody>
         </table>
       </div>
