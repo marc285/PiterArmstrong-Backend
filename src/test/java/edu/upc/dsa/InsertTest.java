@@ -9,11 +9,12 @@ import org.junit.Test;
 public class InsertTest {
     @Test
     public void testQueryINSERT() {
-        Assert.assertEquals("INSERT INTO User (ID, nickname, password, vida, defensa, ataque, dinero) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                QueryHelper.createQueryINSERT(new User("Julen", "1234", 100, 100, 100, 100 )));
+
+       // Assert.assertEquals("INSERT INTO User (ID, nickname, password, vida, defensa, ataque, dinero) VALUES (?, ?, ?, ?, ?, ?, ?)",
+         //       QueryHelper.createQueryINSERT(new User("Julen", "1234", 100, 100, 100, 100 )));
     }
 
-    /**
+
     private UserDAO usr;
     @Before
     public void SetUp(){
@@ -27,6 +28,10 @@ public class InsertTest {
         //this.btr.addEmployee("Laia","Munoz",9000);
         //this.btr.clear();
     }
+    @Test
+    public void getusertest() throws UserNotFoundException{
 
-}
-*/
+        Assert.assertEquals("Pepe",usr.getUser("Pepe").getUsername());  //test de getuser
+
+    }
+}*/

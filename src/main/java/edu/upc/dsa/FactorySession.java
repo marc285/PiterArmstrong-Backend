@@ -21,9 +21,8 @@ public class FactorySession {
     private static Connection getConnection() {
         Connection conn = null;
         try {
-            conn =
-                    DriverManager.getConnection("jdbc:mysql://localhost/test?" +
-                            "user=minty&password=greatsqldb");
+            conn =DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb" + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&user=root&password=root");
+
 
         } catch (SQLException ex) {
             // handle any errors
