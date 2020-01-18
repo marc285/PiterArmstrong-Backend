@@ -5,6 +5,7 @@ package edu.upc.dsa;
 import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.UserObject;
+import jdk.internal.jline.internal.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +32,11 @@ public class UserDAOImpl implements UserDAO {
         objectos = new ArrayList<>();
     }
 
-    public Boolean addUser(String nick, String password) {
+
+    public int addUser(String nick, String password) {
 
         Session session = null;
-        Boolean bool = false;
+        //Boolean bool = false;
         int userID;
         try {
             session = FactorySession.openSession();
@@ -44,21 +46,29 @@ public class UserDAOImpl implements UserDAO {
 
             if(userID == 0) {    //como hemos visto en el getidverify si no encuentra ninguno el
                 session.save(usernew);
-                bool = true;
+                //bool = true;
+                return 201;
             }
             else{
-                bool = false;
+                //bool = false;
+                return 409;
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e){
             e.printStackTrace();
-        } finally {
-            session.close();
+            Log.error("Bad Request: Error in input parameters' format");
+            return 400;
+        }catch (Exception e) {
+            e.printStackTrace();
+            Log.error("Internal Server Error");
+            return 500;
         }
-        return bool;
-
+        finally {
+            //session.close();
+        }
     }
 
-    public User loginUser(User user) throws UserNotFoundException{  //se hace el login
+
+    public User login(User user){  //se hace el login
         User u = null;
         Session session = null;
         int userID;
@@ -66,23 +76,24 @@ public class UserDAOImpl implements UserDAO {
             session = FactorySession.openSession();
             userID = (Integer) session.getIDverify(User.class, user.getUsername(), user.getPassword());
             if(userID == 0){   // aqui pasa al reves que en addUser y es que si no encuentra un id con el nickname  y el password
-                throw new UserNotFoundException();       // del usuario, el id será 0 y nos saltará una excepcion
+                Log.error("User not found"); // del usuario, el id será 0 y nos saltará una excepcion
+                u = new User("404", "null"); //404 User Not found
             }
-
             u = (User) session.login(User.class, userID);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
         }
-        return u;
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.error("Internal Server Error");
+            u = new User("500", "null");
+        }
+        finally {
+            //session.close();
+            return u;
+        }
     }
 
 
-
-
-    public User getUser(String nickname) throws UserNotFoundException {
+    public User getUser(String nickname){
         Session session = null;
         User user = null;
         int userID;
@@ -92,53 +103,83 @@ public class UserDAOImpl implements UserDAO {
             user = (User) session.get(User.class, userID);
         }
         catch (Exception e) {
-            throw new UserNotFoundException(); // LOG
+            e.printStackTrace();
+            Log.error("User not found");
+            user = new User("404", "null");
         }
         finally {
-            session.close();
+            //session.close();
+            return user;
         }
-        return user;
     }
 
 
+    public List<User> getUsers() {   // me da una lista de usuarios
+        Session session = null;
+        List<User> userList=null;
+        try {
+            session = FactorySession.openSession();
+            userList = session.findAll(User.class);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.error("Error getting the list of users");
+            userList.add(new User("500", "null"));
+        }
+        finally {
+            //session.close();
+            return userList;
+        }
+    }
 
-    public void updateUser(User user) throws UserNotFoundException {
+
+    public int updateUser(String usrname, User usr){
         User u = null;
         Session session = null;
         int userID;
         try {
             session = FactorySession.openSession();
-            userID = (Integer) session.getID(User.class, user.getUsername());
-            session.update(user, userID);
-            //c = (Player)session.login(Player.class, userID);
+            userID = (Integer) session.getID(User.class, usrname);
+            session.update(usr, userID);
+            return 201;
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            Log.error("Bad Request: Error in input parameter's format");
+            return 400;
         } catch (Exception e) {
-            throw new UserNotFoundException();
+            e.printStackTrace();
+            Log.error("Internal Server Error");
+            return 500;
         } finally {
-            session.close();
+            //session.close();
         }
     }
 
 
-    public void deleteUser(String nick, String password) throws UserNotFoundException{
+    public int deleteUser(String nick, String pwd){
         Session session = null;
         User user = new User();
-
         int userID;
         try {
             session = FactorySession.openSession();
-            userID = (Integer) session.getIDverify(User.class, nick, password);  //verificamos con contraseña sino no se puede
+            userID = (Integer) session.getIDverify(User.class, nick, pwd);  //En teoría ya hemos comprobado la contraseña en el front-end
             session.delete(user, userID);
-
+            return 201;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.error("Couldn't delete the User");
+            return 500;
         } finally {
-            session.close();
+            //session.close();
         }
 
     }
 
 
-    public List<Objeto> getObjectos(String nickname) throws UserNotFoundException {  //melos objetos de un ususario
+
+    //----------------------------------------------OBJETOS Y LISTA DE OBJETOS: HAY QUE ACABARLO !!!!!!!!!!!!!!!!!!!!!!---------------------------//
+
+    public List<Objeto> getObjectos(String nickname){  //melos objetos de un ususario
         List<Objeto> objetos = new ArrayList<>();
         Session session = null;
         int userID;
@@ -147,10 +188,11 @@ public class UserDAOImpl implements UserDAO {
             userID = (Integer) session.getID(User.class, nickname);
             objectos = session.findAllObjects(Objeto.class, userID);   //ACABAR
         } catch (Exception e) {
-            throw new UserNotFoundException(); // LOG
+            e.printStackTrace();
+            Log.error("x");
 
         } finally {
-            session.close();
+            //session.close();
         }
         return objetos;
     }
@@ -169,29 +211,14 @@ public class UserDAOImpl implements UserDAO {
             UserObject objectuser = new UserObject(userID, objetoID);
             session.save(objeto);
         } catch (Exception e) {
-            // LOG
+            e.printStackTrace();
+            Log.error("x");
         } finally {
-            session.close();
+
         }
     }
 
 
-
-    public List<User> getUsers() {   // me da una lista de usuarios
-        Session session = null;
-        List<User> userList=null;
-        try {
-            session = FactorySession.openSession();
-            userList = session.findAll(User.class);
-        }
-        catch (Exception e) {
-            e.printStackTrace();// LOG
-        }
-        finally {
-            session.close();
-        }
-        return userList;
-    }
 
 /**
     public List<Employee> getEmployeeByDept(int deptID) {

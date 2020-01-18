@@ -2,7 +2,6 @@ package edu.upc.dsa.services;
 
 import edu.upc.dsa.UserDAO;
 import edu.upc.dsa.UserDAOImpl;
-import edu.upc.dsa.UserNotFoundException;
 import edu.upc.dsa.models.*;
 
 import io.swagger.annotations.Api;
@@ -16,12 +15,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-//API Return codes (!! AT TRYs/CATCHES DISCRIMINATE WHICH IS THE CATCH REASON, NOT THROW EXCEPTIONS !!): 200, 201, 400, 404, 507
+//API Return codes: 200, 201, 400, 404, 409, 500
 //@ApiResponse(code = 200, message = "Successful")
 //@ApiResponse(code = 201, message = "Successfully Created")
 //@ApiResponse(code = 400, message = "Bad Request (Error in input parameters' format)")
 //@ApiResponse(code = 404, message = "Not Found")
-//@ApiResponse(code = 507, message = "Insufficient Storage")
+//@ApiResponse(code = 409, message = "Conflict (Resource already existing. User, for example)")
+//@ApiResponse(code = 500, message = "Internal Server Error")
 
 @Api(value = "/usermanager", description = "Users/Players Manager service")
 @Path("/usermanager")
@@ -35,36 +35,66 @@ public class UserManagerService {
     }
 
 
+
     @POST
     @ApiOperation(value = "Login", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful", response = User.class),
-            @ApiResponse(code = 404, message = "User Not Found")
+            @ApiResponse(code = 404, message = "User Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(User userin) {
-        try {
-            User userout = this.us.loginUser(userin);
-            return Response.status(200).entity(userout).build();
-        }
-        catch (UserNotFoundException e) { //(userout == null             ???????????  Quitar las exceptions
-            return Response.status(404).build();
+    public Response login(User usrin) {
+            User usrout = this.us.login(usrin);
+            String res = usrout.getUsername();
+            switch (res){
+                case "404": return Response.status(404).build();
+                case "500": return Response.status(500).build();
+                default: return Response.status(200).entity(usrout).build();
+            }
+    }
+
+
+
+    @POST
+    @ApiOperation(value = "Create a new user (Register)", notes = " ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "User Successfully Created"),
+            @ApiResponse(code = 400, message = "Bad Request (Error in input parameters' format)"),
+            @ApiResponse(code = 409, message = "Conflict (User already exists)"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Path("/register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response register(User usr) {
+
+        int res = this.us.addUser(usr.getUsername(), usr.getPassword());
+        switch (res){
+            case 201: return Response.status(201).build();
+            case 400: return Response.status(400).build();
+            case 409: return Response.status(409).build();
+            default: return Response.status(500).build();
         }
     }
+
 
 
     @GET
     @ApiOperation(value = "Get the list of all Users", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful", response = User.class, responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
-        List<User> listaUs = this.us.getUsers();
-        GenericEntity<List<User>> entity = new GenericEntity<List<User>>(listaUs){};
-        return Response.status(200).entity(entity).build();
+        List<User> usrlist = this.us.getUsers();
+        GenericEntity<List<User>> listentity = new GenericEntity<List<User>>(usrlist){};
+        switch (usrlist.get(0).getUsername()){
+            case "500": return Response.status(500).build();
+            default: return Response.status(200).entity(listentity).build();
+        }
     }
 
 
@@ -73,67 +103,60 @@ public class UserManagerService {
     @ApiOperation(value = "Get User stats (User class) given its name", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful", response = User.class),
-            @ApiResponse(code = 404, message = "User Not Found")
+            @ApiResponse(code = 404, message = "User Not Found"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Path("/users/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("name") String name) {
-
-        //(Julen está trabajando en esto)
-
-        // User u = this.us.getUser(name);
-        // if (u == null) return Response.status(404).build();
-        // else return Response.status(201).entity(u).build();
-        return null; //
-    }
-
-
-
-/*  @GET
-    @ApiOperation(value = "Get the stats of a given User", notes = "Expresadas en formato de Usuario")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful (Respuesta correcta)", response = Usuario.class),
-            @ApiResponse(code = 404, message = "Not Found (Usuario no encontrado)")
-    })
-    @Path("/getEstadisticas")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser() {
-        Usuario u = this.us.getUser();
-        if (u == null) return Response.status(404).build();
-        else return Response.status(201).entity(u).build();
-    }*/
-
-
-
-    @POST
-    @ApiOperation(value = "Create a new user", notes = " ")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "User Successfully Created", response = User.class),
-            @ApiResponse(code = 400, message = "Bad Request (Error in input parameters' format)"),
-            @ApiResponse(code = 507, message = "Insufficient Storage")
-    })
-    @Path("/newuser")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response newUser(User us) {
-
-        /*if (jugador.getNombre()==null)  return Response.status(500).entity(jugador).build();
-        this.tm.addJugador(jugador.getId(), jugador.getNombre(), jugador.getApellido());
-        int i=0;
-        while(i<jugador.getObjetos().size()) {
-            this.tm.addObjeto(jugador.getObjetos().get(i).getNombre(), jugador.getId());
-            i++;
+        User usr = this.us.getUser(name);
+        switch (usr.getUsername()){
+            case "404": return Response.status(404).build();
+            default: return Response.status(200).entity(usr).build();
         }
-        return Response.status(201).entity(jugador).build();*/
-
-        this.us.addUser(us.getUsername(), us.getPassword());
-        // crear UserObject
-        // bool true = bien registrado
-        // bool false = ya existe → BUSCAR CÓDIGO HTTP
-
-        return null; //
     }
 
 
+
+    @PUT
+    @ApiOperation(value = "Auto-update of User stats or modify its password", notes = " ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully updated"),
+            @ApiResponse(code = 400, message = "Bad Request (Error in input parameters' format)"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Path("/users/{name}/update")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(User usr, @PathParam("name") String name) {
+        int res = this.us.updateUser(name,usr);
+        switch (res){
+            case 201: return Response.status(201).build();
+            case 400: return Response.status(400).build();
+            default: return Response.status(500).build();
+        }
+    }
+
+
+
+    @DELETE
+    @ApiOperation(value = "Delete an existing User", notes = " ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully deleted"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Path("/users/{name}/delete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser(String pwd, @PathParam("name") String name) {
+        int res = this.us.deleteUser(name, pwd);
+        switch (res) {
+            case 201:
+                return Response.status(201).build();
+            default:
+                return Response.status(500).build();
+        }
+    }
+
+    //----------------------------------------------OBJETOS Y LISTA DE OBJETOS: HAY QUE ACABARLO !!!!!!!!!!!!!!!!!!!!!!---------------------------//
 
     /*@GET    //consultar objetos de un jugador
     @ApiOperation(value = "Get objetos from a Jugador", notes = "asdasd")
@@ -154,22 +177,6 @@ public class UserManagerService {
 
 
 
-/*  @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response newJugador(Usuario jugador) {
-
-        if (jugador.getNombre()==null)  return Response.status(500).entity(jugador).build();
-        this.tm.addJugador(jugador.getId(), jugador.getNombre(), jugador.getApellido());
-        int i=0;
-        while(i<jugador.getObjetos().size()) {
-           this.tm.addObjeto(jugador.getObjetos().get(i).getNombre(), jugador.getId());
-           i++;
-        }
-        return Response.status(201).entity(jugador).build();
-    }*/
-
-
-
     /*@POST  //añadir un objeto a un jugador
     @ApiOperation(value = "create a new Object", notes = "crear nuevo objeto")
     @ApiResponses(value = {
@@ -186,23 +193,6 @@ public class UserManagerService {
 
         return Response.status(201).entity(o).build();
     }*/
-
-
-
-    /*@PUT
-    @ApiOperation(value = "Modificar un Usuario", notes = "debes poner el id del usuario que quieres cambiar")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful"),
-            @ApiResponse(code = 404, message = "Jugador not found")
-    })
-    @Path("/modJugador")
-    public Response updateJugador(Usuario jug) {
-        Usuario t = this.tm.updateJugador(jug);
-        if (t == null) return Response.status(404).build();
-        return Response.status(201).build();
-    }*/
-
-
 
 }
 
