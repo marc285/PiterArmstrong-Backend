@@ -5,12 +5,13 @@ package edu.upc.dsa;
 import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.UserObject;
-import jdk.internal.jline.internal.Log;
+//import jdk.internal.jline.internal.Log;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class UserDAOImpl implements UserDAO {
     final static Logger log = Logger.getLogger(UserDAOImpl.class.getName());
@@ -55,11 +56,11 @@ public class UserDAOImpl implements UserDAO {
             }
         } catch (IllegalArgumentException e){
             e.printStackTrace();
-            Log.error("Bad Request: Error in input parameters' format");
+            log.error("Bad Request: Error in input parameters' format");
             return 400;
         }catch (Exception e) {
             e.printStackTrace();
-            Log.error("Internal Server Error");
+            log.error("Internal Server Error");
             return 500;
         }
         finally {
@@ -76,14 +77,14 @@ public class UserDAOImpl implements UserDAO {
             session = FactorySession.openSession();
             userID = (Integer) session.getIDverify(User.class, user.getUsername(), user.getPassword());
             if(userID == 0){   // aqui pasa al reves que en addUser y es que si no encuentra un id con el nickname  y el password
-                Log.error("User not found"); // del usuario, el id será 0 y nos saltará una excepcion
+                log.error("User not found"); // del usuario, el id será 0 y nos saltará una excepcion
                 u = new User("404", "null"); //404 User Not found
             }
             u = (User) session.login(User.class, userID);
         }
         catch (Exception e) {
             e.printStackTrace();
-            Log.error("Internal Server Error");
+            log.error("Internal Server Error");
             u = new User("500", "null");
         }
         finally {
@@ -104,7 +105,7 @@ public class UserDAOImpl implements UserDAO {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Log.error("User not found");
+            log.error("User not found");
             user = new User("404", "null");
         }
         finally {
@@ -123,7 +124,7 @@ public class UserDAOImpl implements UserDAO {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Log.error("Error getting the list of users");
+            log.error("Error getting the list of users");
             userList.add(new User("500", "null"));
         }
         finally {
@@ -144,11 +145,11 @@ public class UserDAOImpl implements UserDAO {
             return 201;
         } catch (IllegalArgumentException e){
             e.printStackTrace();
-            Log.error("Bad Request: Error in input parameter's format");
+            log.error("Bad Request: Error in input parameter's format");
             return 400;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.error("Internal Server Error");
+            log.error("Internal Server Error");
             return 500;
         } finally {
             //session.close();
@@ -167,7 +168,7 @@ public class UserDAOImpl implements UserDAO {
             return 201;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.error("Couldn't delete the User");
+            log.error("Couldn't delete the User");
             return 500;
         } finally {
             //session.close();
@@ -189,7 +190,7 @@ public class UserDAOImpl implements UserDAO {
             objectos = session.findAllObjects(Objeto.class, userID);   //ACABAR
         } catch (Exception e) {
             e.printStackTrace();
-            Log.error("x");
+            log.error("x");
 
         } finally {
             //session.close();
@@ -212,7 +213,7 @@ public class UserDAOImpl implements UserDAO {
             session.save(objeto);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.error("x");
+            log.error("x");
         } finally {
 
         }
