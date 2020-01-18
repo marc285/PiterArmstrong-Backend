@@ -1,11 +1,13 @@
 package edu.upc.dsa;
 
-import edu.upc.dsa.models.User;
-import edu.upc.dsa.util.QueryHelper;
+import edu.upc.dsa.models.Objeto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-/*
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class InsertTest {
     @Test
     public void testQueryINSERT() {
@@ -29,9 +31,22 @@ public class InsertTest {
         //this.btr.clear();
     }
     @Test
-    public void getusertest() throws UserNotFoundException{
+    public void getusertest(){
 
         Assert.assertEquals("Pepe",usr.getUser("Pepe").getUsername());  //test de getuser
 
     }
-}*/
+    @Test
+    public void InsertObjectTest() {
+
+        this.usr.AddObjectToUser("Pepe","Casco");
+    }
+    @Test
+    public void GetObjectosTest() {
+        List<Objeto> lista= new ArrayList<>();
+
+             lista=   (List<Objeto>) this.usr.getObjectos("Pepe");
+
+        Assert.assertEquals("Casco",lista.get(0).getNombre());
+    }
+}

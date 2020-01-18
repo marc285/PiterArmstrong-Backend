@@ -9,10 +9,18 @@ public class User {   //Former "Personaje" and "Usuario" classes
     int attack;
     int money;
     int pieces;  //las piezas serán un int que aqui no identificamos que clase de pieza es sino solo las qu tiene
+    int screen;
 
-    //public List<Objeto> objetos;
+    public int getScreen() {
+        return screen;
+    }
 
-    public User(String usr, String pwd, int health, int def, int att, int money, int pieces) {
+    public void setScreen(int screen) {
+        this.screen = screen;
+    }
+//public List<Objeto> objetos;
+
+    public User(String usr, String pwd, int health, int def, int att, int money, int pieces, int screen) {
         this.username = usr;
         this.password = pwd;
         this.health = health;
@@ -21,6 +29,7 @@ public class User {   //Former "Personaje" and "Usuario" classes
         this.money = money;
         this.pieces = pieces;
        // objetos = new LinkedList<Objeto>();  //HE QUITADO TODO LO DE OBJETOS PORQUE NO SE COMO RELACIONARLO
+        this.screen= screen;
     }
 
     public User(String name, String pass){

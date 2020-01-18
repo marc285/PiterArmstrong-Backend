@@ -1,8 +1,8 @@
 package edu.upc.dsa;
 
+import edu.upc.dsa.models.Objeto;
 import edu.upc.dsa.util.ObjectHelper;
 import edu.upc.dsa.util.QueryHelper;
-
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +24,7 @@ public class SessionImpl implements Session {
         PreparedStatement pstm = null;
         try {
             pstm = conn.prepareStatement(insertQuery);
-            //pstm.setObject(1, 0);   //la i es la posición de los interrogantes y la o el valor que le pone
+            pstm.setObject(1, 0);   //la i es la posición de los interrogantes y la o el valor que le pone
             int i = 2;
 
             for (String field: ObjectHelper.getFields(entity)) {
@@ -43,14 +43,14 @@ public class SessionImpl implements Session {
         }
     }
 
-    public void añadirObjeto(Object entity) {  //añade un objeto a un user en la tabla de UserObject
+    public void SaveObject(Object entity) {  //añade un objeto a un user en la tabla de UserObject
         String insertobjQuery = QueryHelper.createQueryINSERTOBJ(entity);     //NO TENGO CLARO QUE ESTE BIEN
 
         PreparedStatement pstm = null;
         try {
             pstm = conn.prepareStatement(insertobjQuery);
             //pstm.setObject(1, 0);   //la i es la posición de los interrogantes y la 0 el valor que le pone
-            int i = 2;
+            int i = 1;
 
             for (String field: ObjectHelper.getFields(entity)) {
                 pstm.setObject(i++, ObjectHelper.getter(entity, field));
@@ -254,10 +254,11 @@ public class SessionImpl implements Session {
         }
         return listOfObjects;
     }
-    public List<Object> findAllObjects(Class theClass, int ID) {    //principalmente sera para obtener los objetos de un jugador
-        String findAllQuery = QueryHelper.createQuerySELECT(theClass);     //que devolvera una lista con los id de los objetos que tiene
+    public List<Objeto> findAllObjects(Class theClass, int ID) {    //principalmente sera para obtener los objetos de un jugador
+        String findAllQuery = QueryHelper.createQuerySELECTIDuserRelacion(theClass);     //que devolvera una lista con los id de los objetos que tiene
         Object entity = null;                                              //un user que pasamos su id como parametro
         List<Object> listOfObjects = new ArrayList<Object>();
+List<Integer> numeros= new ArrayList<Integer>();
         try {
             entity = theClass.getDeclaredConstructor().newInstance();       //ACABAR TODO LO QUE DERIVA DE ESTO
         }
@@ -284,31 +285,60 @@ public class SessionImpl implements Session {
             while(rs.next()){
                 Field[] fields = theClass.getDeclaredFields();  //fields--> obtener campos declarados en esta clase:name, address, id
                 //rs.getString(1);
-                rs.getInt(2); //me devuelve la columna 2
-                for (int i = 0; i<fields.length; i++){  //lo ejecuto el numero de veces de filas que tenga en la tabla
-                    ObjectHelper.setter(entity, fields[i].getName(), rs.getObject(i + 2));
-                }
+              numeros.add( rs.getInt(2)); //me devuelve la columna 2
+               // entity = theClass.getDeclaredConstructor().newInstance();
 
-                listOfObjects.add(entity);
-                entity = theClass.getDeclaredConstructor().newInstance();
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        catch (IllegalAccessException e) {
-            e.printStackTrace();
+
+
+
+        int i=0;
+        List<Objeto> objetos= new ArrayList<>();
+
+
+            String selectQuery = QueryHelper.createQuerySELECT(Objeto.class);
+
+            Objeto entity2 = new Objeto();
+int buscar;
+        while (i<numeros.size()) {
+
+           buscar= numeros.get(i);
+            ResultSet rs2 = null;
+            PreparedStatement pstm2 = null;
+
+            try {
+                pstm2 = conn.prepareStatement(selectQuery);
+                pstm2.setObject(1,buscar);
+                rs2 = pstm2.executeQuery();
+
+
+                while(rs2.next()){
+                    Field[] fields = theClass.getDeclaredFields();
+                    rs2.getString(1);
+                    for (int j = 0; j<fields.length; j++){
+                        String fieldName = this.getNameCampo(i+2, rs2);
+                        ObjectHelper.setter(entity2, fieldName, rs2.getObject(i + 2));
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            objetos.add(entity2);
+            i++;
         }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-        catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return listOfObjects;
+
+
+
+
+        return objetos;
     }
 /**
     public List<Object> findAllObjects(Class theClass, String nickname) {    //obtiene todos los datos de una tabla la cual
@@ -380,13 +410,15 @@ public class SessionImpl implements Session {
             pstm = conn.prepareStatement(selectQuery);
             pstm.setObject(1, nick);   //en el primer interrogante va el nickname
             pstm.setObject(2, password);   // en el segundo va el password
-            rs = pstm.executeQuery();
+            rs = pstm.executeQuery(); //cambiar para que haga algo si no lo encuentra
             rs.next();
             id = rs.getInt(1);  //obtiene el ID encontrado
         } catch (SQLException e) {
             e.printStackTrace();
             //throw new UserNotFoundException();
+
         }
+
         return id;   // si no lo encuentra  el id es 0 y si lo encuentra pues devuelve el id que tiene
     }
 
@@ -415,7 +447,30 @@ public class SessionImpl implements Session {
         }
         return id;
     }
+    public int getIDObjeto(Class theClass, String nick) //obtiene id de un usuario sin necesidad de verificar
+    {                                 ////principalmente para obtener datos del user y para modificar su atributos
+        String selectQuery = QueryHelper.createQuerySELECTIDOBJETO(theClass);
 
+        ResultSet rs;
+        PreparedStatement pstm;
+
+        int id = 0;
+
+        try {
+            pstm = conn.prepareStatement(selectQuery);
+            pstm.setObject(1, nick);
+            rs = pstm.executeQuery();
+
+            rs.next();
+
+            id = rs.getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //throw new UserNotFoundException();
+        }
+        return id;
+    }
     public void close() {
         try {
             this.conn.close();

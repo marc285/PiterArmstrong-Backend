@@ -73,6 +73,12 @@ public class QueryHelper {
         sb.append(" WHERE ID = ?");
         return sb.toString();
     }
+    public static String createQuerySELECTIDuserRelacion(Class theClass) {    //obtiene datos de los objetos de un user a partir de su id
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT * FROM ").append(theClass.getSimpleName());
+        sb.append(" WHERE idUser = ?");
+        return sb.toString();
+    }
 
     public static String createQuerySELECTall(Class theClass) {   //obtiene todos los datos de una tabla
         StringBuffer sb = new StringBuffer();                     //sirve para public List<Object> findAll(Class theClass)
@@ -82,19 +88,26 @@ public class QueryHelper {
     public static String createQuerySELECTUser(Class theClass) {  //obtien todos los datos de la tabla con el nickname que le doy
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT * FROM ").append(theClass.getSimpleName());
-        sb.append(" WHERE nickname = ?");
+        sb.append(" WHERE username = ?");
         return sb.toString();
     }
     public static String createQuerySELECTIDverify(Class theClass) {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT * FROM ").append(theClass.getSimpleName());
-        sb.append(" WHERE nickname = ?").append(" ").append("AND password = ?");
+        sb.append(" WHERE username = ?").append(" ").append("AND password = ?");
         return sb.toString();
     }
     public static String createQuerySELECTID(Class theClass) {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT * FROM ").append(theClass.getSimpleName());
-        sb.append(" WHERE nickname = ?");
+        sb.append(" WHERE username = ?");
+
+        return sb.toString();
+    }
+    public static String createQuerySELECTIDOBJETO(Class theClass) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT * FROM ").append(theClass.getSimpleName());
+        sb.append(" WHERE nombre = ?");
 
         return sb.toString();
     }

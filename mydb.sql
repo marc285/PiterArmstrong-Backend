@@ -19,30 +19,17 @@ USE `mydb` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `ID` INT NOT NULL AUTO_INCREMENT,
-  `nickname` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `vida` INT NOT NULL,
-  `defensa` INT NOT NULL,
-  `ataque` INT NOT NULL,
-  `dinero` INT NOT NULL,
-  `piezas` INT NOT NULL,
-  `pantalla` INT NULL,
+  `health` INT NOT NULL,
+  `defense` INT NOT NULL,
+  `attack` INT NOT NULL,
+  `money` INT NOT NULL,
+  `pieces` INT NOT NULL,
+  `screen` INT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
-  UNIQUE INDEX `nickname_UNIQUE` (`nickname` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`employee`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`employee` (
-  `ID` INT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `surname` VARCHAR(45) NOT NULL,
-  `salary` INT NOT NULL,
-  UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
-  PRIMARY KEY (`ID`))
+  UNIQUE INDEX `nickname_UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -52,8 +39,6 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`Objeto` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `tipo` VARCHAR(45) NOT NULL,
-  `stat` VARCHAR(45) NOT NULL,
   `coste` VARCHAR(45) NOT NULL,
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE,
   PRIMARY KEY (`ID`))
@@ -108,7 +93,27 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `mydb`;
-INSERT INTO `mydb`.`User` (`ID`, `nickname`, `password`, `vida`, `defensa`, `ataque`, `dinero`, `piezas`, `pantalla`) VALUES (9999, 'Pepe', '1234', 10, 10, 10, 10, 10, 10);
+INSERT INTO `mydb`.`User` (`ID`, `username`, `password`, `health`, `defense`, `attack`, `money`, `pieces`, `screen`) VALUES (9999, 'Pepe', '1234', 10, 10, 10, 10, 10, 10);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `mydb`.`Objeto`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `mydb`;
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (1, 'Casco', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (2, 'Destornillador', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (3, 'Energia', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (4, 'Extintor', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (5, 'Injector', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (6, 'Fregona(llave española)', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (7, 'Martillo de thor', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (8, 'Espatula', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (9, 'Sierra', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (10, 'Soldador', '1');
+INSERT INTO `mydb`.`Objeto` (`ID`, `nombre`, `coste`) VALUES (11, 'Taladradora', '1');
 
 COMMIT;
 

@@ -42,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
         try {
             session = FactorySession.openSession();
             users.put(nick, new User(nick, password));  //metes en el hashmap nombre y contraseña
-            User usernew = new User(nick, password, 100, 100, 100, 100, 0);  //registras al user y le pones todos los stats
+            User usernew = new User(nick, password, 100, 100, 100, 100, 0,0);  //registras al user y le pones todos los stats
             userID = (Integer) session.getIDverify(User.class, usernew.getUsername(), usernew.getPassword()); // aqui comprueba si el id ya esta o no
 
             if(userID == 0) {    //como hemos visto en el getidverify si no encuentra ninguno el
@@ -66,6 +66,23 @@ public class UserDAOImpl implements UserDAO {
         finally {
             //session.close();
         }
+    }
+    public String getScreen(String nickname) {
+        Session session = null;
+        User user = null;
+        int userID;
+        try {
+            session = FactorySession.openSession();
+            userID = (Integer) session.getID(User.class, nickname);
+            user = (User) session.get(User.class, userID);
+        }
+        catch (Exception e) {
+            e.printStackTrace(); // LOG
+        }
+        finally {
+            session.close();
+        }
+        return String.valueOf(user.getScreen());
     }
 
 
@@ -187,19 +204,17 @@ public class UserDAOImpl implements UserDAO {
         try {
             session = FactorySession.openSession();
             userID = (Integer) session.getID(User.class, nickname);
-            objectos = session.findAllObjects(Objeto.class, userID);   //ACABAR
+            objetos = session.findAllObjects(UserObject.class, userID);   //ACABAR
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("x");
+            e.printStackTrace(); // LOG
 
         } finally {
-            //session.close();
+            session.close();
         }
         return objetos;
     }
 
     public void AddObjectToUser(String nick, String nomobjeto) {     //ACABAR ESTO HACER EN SEISSION IMPL
-        //objects.add(new Objeto(username, name, image));
         Session session = null;
         User user = null;
         Objeto objeto = null;
@@ -208,14 +223,13 @@ public class UserDAOImpl implements UserDAO {
         try {
             session = FactorySession.openSession();
             userID = (Integer) session.getID(User.class, nick);
-            objetoID = (Integer) session.getID(Objeto.class, nomobjeto);
+            objetoID = (Integer) session.getIDObjeto(Objeto.class, nomobjeto);
             UserObject objectuser = new UserObject(userID, objetoID);
-            session.save(objeto);
+            session.SaveObject(objectuser);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("x");
+            // LOG
         } finally {
-
+            session.close();
         }
     }
 

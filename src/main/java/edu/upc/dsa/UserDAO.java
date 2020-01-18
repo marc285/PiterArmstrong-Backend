@@ -13,8 +13,8 @@ public interface UserDAO {
     public List<User> getUsers();  //ok
     public int updateUser(String usrname, User usr); //ok //actualiza al usuario, por ejemplo le quita vida, le da mas dinero... TAMBIÉN CAMBIAR CONTRASEÑA
     public int deleteUser(String nick, String password);  //ok
-
-    List<Objeto> getObjectos(String nick);
+    public List<Objeto> getObjectos(String nick);
     public void AddObjectToUser(String nick, String nomobjeto);
+    String getScreen(String username);
     //public List <User> getEmployeeByDept(int deptId);
 }

@@ -2,29 +2,33 @@ package edu.upc.dsa.models;
 
 public class UserObject {   //relaciona los usuarios con los objetos
 
-    int idUser;
-    int idObject;
+    int iduser;
+    int idobject;
 
     public UserObject(int iduser, int idobject) {
 
-        this.idUser = iduser;
-        this.idObject = idobject;
+        this.iduser = iduser;
+        this.idobject = idobject;
     }
 
+    public UserObject() {
 
-    public int getIdUser() {
-        return idUser;
+
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    public int getIduser() {
+        return iduser;
     }
 
-    public int getIdObject() {
-        return idObject;
+    public void setIduser(int iduser) {
+        this.iduser = iduser;
     }
 
-    public void setIdObject(int idObject) {
-        this.idObject = idObject;
+    public int getIdobject() {
+        return idobject;
+    }
+
+    public void setIdobject(int idobject) {
+        this.idobject = idobject;
     }
 }

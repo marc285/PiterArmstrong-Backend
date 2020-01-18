@@ -12,9 +12,10 @@ public interface Session<E> {  //estan en orden en el implement
     List<Object> findAll(Class theClass);    //ok
     List<Object> findAllObjects(Class theClass, int ID); //ok
     int getIDverify(Class theClass, String username, String password); //ok
+     int getIDObjeto(Class theClass, String nick);
     int getID(Class theClass, String username);  //ok
     void close();  //ok
-
+    void SaveObject(Object entity);
 
     List<Object> findAll(Class theClass, HashMap params);   //supongo que esto es para que me de todos los usuarios en una lista
     List<Object> query(String query, Class theClass, HashMap params);  // ni idea que tiene que hacer esto
