@@ -5,10 +5,7 @@ public class Objeto {
      int coste;
 //ppner lo de la base de datos
 
-
-
     public Objeto(){} //constructor vacio
-
 
     public Objeto(String nom, int cost) {
 
@@ -28,24 +25,5 @@ public class Objeto {
     public void setCoste(int coste) {
         this.coste = coste;
     }
-
-
-
-    //4 tipos de objetos_
-    //piezas (no me das stats de ningun tipo)
-    //armas(me suben el ataque)
-    //armaduras(me suben la defensa)
-    //botiguines(me suben la vida)
-
-    public class arma{
-
-    }
-    public class armadura{
-
-    }
-    public class botiquin{
-
-    }
-
 
 }

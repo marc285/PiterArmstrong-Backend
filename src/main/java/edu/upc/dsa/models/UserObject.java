@@ -12,8 +12,6 @@ public class UserObject {   //relaciona los usuarios con los objetos
     }
 
     public UserObject() {
-
-
     }
 
     public int getIduser() {

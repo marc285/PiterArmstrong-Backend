@@ -11,15 +11,6 @@ public class User {   //Former "Personaje" and "Usuario" classes
     int pieces;  //las piezas serán un int que aqui no identificamos que clase de pieza es sino solo las qu tiene
     int screen;
 
-    public int getScreen() {
-        return screen;
-    }
-
-    public void setScreen(int screen) {
-        this.screen = screen;
-    }
-//public List<Objeto> objetos;
-
     public User(String usr, String pwd, int health, int def, int att, int money, int pieces, int screen) {
         this.username = usr;
         this.password = pwd;
@@ -28,7 +19,6 @@ public class User {   //Former "Personaje" and "Usuario" classes
         this.attack = att;
         this.money = money;
         this.pieces = pieces;
-       // objetos = new LinkedList<Objeto>();  //HE QUITADO TODO LO DE OBJETOS PORQUE NO SE COMO RELACIONARLO
         this.screen= screen;
     }
 
@@ -49,9 +39,13 @@ public class User {   //Former "Personaje" and "Usuario" classes
         this.pieces = pieces;
     }
 
-    //public List<Objeto> getObjetos() {   //HE QUITADO TODO LO DE OBJETOS PORQUE NO SE COMO RELACIONARLO
-     //   return objetos;
-    //}
+    public int getScreen() {
+        return screen;
+    }
+
+    public void setScreen(int screen) {
+        this.screen = screen;
+    }
 
     public int getDefense() {
         return defense;
@@ -102,18 +96,3 @@ public class User {   //Former "Personaje" and "Usuario" classes
     }
 
 }
-
-/**
- public Objeto getObjeto(String nom) throws ObjectoNotFoundException{    // me devuelve el objeto que yo le he pasado
- for (Objeto o : objetos){
- if (o.getNombre().equals(nom)){
- return o;
- }
- }
- throw new ObjectoNotFoundException();
- }
-
-
- private class ObjectoNotFoundException extends Exception {
- }
- */
