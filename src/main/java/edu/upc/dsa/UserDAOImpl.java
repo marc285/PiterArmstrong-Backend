@@ -67,23 +67,6 @@ public class UserDAOImpl implements UserDAO {
             //session.close();
         }
     }
-    public String getScreen(String nickname) {
-        Session session = null;
-        User user = null;
-        int userID;
-        try {
-            session = FactorySession.openSession();
-            userID = (Integer) session.getID(User.class, nickname);
-            user = (User) session.get(User.class, userID);
-        }
-        catch (Exception e) {
-            e.printStackTrace(); // LOG
-        }
-        finally {
-            session.close();
-        }
-        return String.valueOf(user.getScreen());
-    }
 
 
     public User login(User user){  //se hace el login
@@ -194,27 +177,46 @@ public class UserDAOImpl implements UserDAO {
     }
 
 
+    public String getUserScreen(String nickname) {
+        Session session = null;
+        User user = null;
+        int userID;
+        try {
+            session = FactorySession.openSession();
+            userID = (Integer) session.getID(User.class, nickname);
+            user = (User) session.get(User.class, userID);
+            return String.valueOf(user.getScreen());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error("Screen not found");
+            return "404";
+        }
+        finally {
+            //session.close();
+        }
+    }
 
-    //----------------------------------------------OBJETOS Y LISTA DE OBJETOS: HAY QUE ACABARLO !!!!!!!!!!!!!!!!!!!!!!---------------------------//
 
-    public List<Objeto> getObjectos(String nickname){  //melos objetos de un ususario
-        List<Objeto> objetos = new ArrayList<>();
+    public List<Objeto> getUserObjects(String nickname){  //melos objetos de un ususario
+        List<Objeto> objects = new ArrayList<>();
         Session session = null;
         int userID;
         try {
             session = FactorySession.openSession();
             userID = (Integer) session.getID(User.class, nickname);
-            objetos = session.findAllObjects(UserObject.class, userID);   //ACABAR
+            objects = session.findAllObjects(UserObject.class, userID);
         } catch (Exception e) {
-            e.printStackTrace(); // LOG
-
+            e.printStackTrace();
+            log.error("Error getting User Objects");
+            objects.add(new Objeto("500", 0));
         } finally {
-            session.close();
+            //session.close();
+            return objects;
         }
-        return objetos;
     }
 
-    public void AddObjectToUser(String nick, String nomobjeto) {     //ACABAR ESTO HACER EN SEISSION IMPL
+    public int addObjectToUser(String nick, String nomobjeto) {     //ACABAR ESTO HACER EN SEISSION IMPL
         Session session = null;
         User user = null;
         Objeto objeto = null;
@@ -226,37 +228,13 @@ public class UserDAOImpl implements UserDAO {
             objetoID = (Integer) session.getIDObjeto(Objeto.class, nomobjeto);
             UserObject objectuser = new UserObject(userID, objetoID);
             session.SaveObject(objectuser);
+            return 201;
         } catch (Exception e) {
-            // LOG
+            e.printStackTrace();
+            log.error("Error Adding Object to a User");
+            return 500;
         } finally {
-            session.close();
+            //session.close();
         }
     }
-
-
-
-/**
-    public List<Employee> getEmployeeByDept(int deptID) {
-
-        Session session = null;
-        List<Employee> employeeList=null;
-        try {
-            session = FactorySession.openSession();
-
-            HashMap<String, Integer> params = new HashMap<String, Integer>();
-            params.put("deptID", deptID);
-
-            employeeList = session.findAll(Employee.class, params);
-        }
-        catch (Exception e) {
-            // LOG
-        }
-        finally {
-            session.close();
-        }
-        return employeeList;
-    }
- */
-
-
 }

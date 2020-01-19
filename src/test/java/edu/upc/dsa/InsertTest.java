@@ -39,13 +39,13 @@ public class InsertTest {
     @Test
     public void InsertObjectTest() {
 
-        this.usr.AddObjectToUser("Pepe","Casco");
+        this.usr.addObjectToUser("Pepe","Casco");
     }
     @Test
     public void GetObjectosTest() {
         List<Objeto> lista= new ArrayList<>();
 
-             lista=   (List<Objeto>) this.usr.getObjectos("Pepe");
+             lista=   (List<Objeto>) this.usr.getUserObjects("Pepe");
 
         Assert.assertEquals("Casco",lista.get(0).getNombre());
     }

@@ -156,43 +156,68 @@ public class UserManagerService {
         }
     }
 
-    //----------------------------------------------OBJETOS Y LISTA DE OBJETOS: HAY QUE ACABARLO !!!!!!!!!!!!!!!!!!!!!!---------------------------//
 
-    /*@GET    //consultar objetos de un jugador
-    @ApiOperation(value = "Get objetos from a Jugador", notes = "asdasd")
+
+    @GET
+    @ApiOperation(value = "Get the Screen of a User", notes = " ")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Objeto.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "User not found")
-
+            @ApiResponse(code = 200, message = "Successfully", response = String.class),
+            @ApiResponse(code = 404, message = "Screen Not Found")
     })
-    @Path("/getObjetos/{idjugador}/")
+    @Path("/users/{name}/screen")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getObjetos(@PathParam("idjugador") String id) {
-        List<Objeto> objetos = tm.consultarJugador(id).getObjetos();
-        if (objetos == null) return Response.status(404).build()  ;
-        GenericEntity<List<Objeto>> entity = new GenericEntity<List<Objeto>>(objetos) {};
-        return Response.status(201).entity(entity).build()  ;
+    public Response getUserScreen(@PathParam("name") String name) {
+        String res = this.us.getUserScreen(name);
+        switch (res) {
+            case "404":
+                return Response.status(404).build();
+            default:
+                return Response.status(200).entity(res).build();
+        }
+    }
 
-    }*/
 
-
-
-    /*@POST  //añadir un objeto a un jugador
-    @ApiOperation(value = "create a new Object", notes = "crear nuevo objeto")
+    @GET
+    @ApiOperation(value = "Get Objects from a Player", notes = " ")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Object.class),
-            @ApiResponse(code = 500, message = "Error, intenta de nuevo")
+            @ApiResponse(code = 200, message = "Successful", response = Objeto.class, responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
 
     })
-    @Path("/jugador/{idjugador}/objeto")
+    @Path("/users/{name}/objects")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserObjects(@PathParam("name") String name) {
+
+        List<Objeto> objlist = this.us.getUserObjects(name);
+        GenericEntity<List<Objeto>> listentity = new GenericEntity<List<Objeto>>(objlist){};
+
+        switch (objlist.get(0).getNombre()) {
+            case "500":
+                return Response.status(500).build();
+            default:
+                return Response.status(200).entity(listentity).build();
+        }
+    }
+
+
+
+    @POST
+    @ApiOperation(value = "Add an Object to a User", notes = " ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully added"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @Path("/users/{name}/addobject")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response newObjecto(Objeto o,@PathParam("idjugador") String id ) {
-
-        if (o.getNombre()== null) return Response.status(500).entity(o).build();
-        this.tm.addObjeto(o.getNombre(), id);
-
-        return Response.status(201).entity(o).build();
-    }*/
+    public Response addObjectToUser(String obj, @PathParam("name") String name) {
+        int res = this.us.addObjectToUser(name, obj);
+        switch (res) {
+            case 201:
+                return Response.status(201).build();
+            default:
+                return Response.status(500).build();
+        }
+    }
 
 }
 
