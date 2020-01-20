@@ -178,7 +178,7 @@ public class UserManagerService {
 
 
     @GET
-    @ApiOperation(value = "Get Objects from a Player", notes = " ")
+    @ApiOperation(value = "Get Objects list from a User", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful", response = Objeto.class, responseContainer = "List"),
             @ApiResponse(code = 500, message = "Internal Server Error")
