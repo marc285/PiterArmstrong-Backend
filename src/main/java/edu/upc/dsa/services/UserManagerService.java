@@ -118,7 +118,7 @@ public class UserManagerService {
 
 
 
-    @PUT
+    @POST
     @ApiOperation(value = "Auto-update of User stats or modify its password", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated"),
@@ -138,7 +138,7 @@ public class UserManagerService {
 
 
 
-    @DELETE
+    @POST
     @ApiOperation(value = "Delete an existing User", notes = " ")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully deleted"),
