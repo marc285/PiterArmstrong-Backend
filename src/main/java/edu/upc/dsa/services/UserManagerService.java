@@ -145,9 +145,9 @@ public class UserManagerService {
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @Path("/users/{name}/delete")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteUser(String pwd, @PathParam("name") String name) {
-        int res = this.us.deleteUser(name, pwd);
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteUser(User us) {
+        int res = this.us.deleteUser(us.getUsername(), us.getPassword());
         switch (res) {
             case 201:
                 return Response.status(201).build();
