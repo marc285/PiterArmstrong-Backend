@@ -11,7 +11,7 @@
     <link rel="stylesheet" href= "../css/bootstrap.index2.css" >
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/bootstrap.stats.js"></script>
+   <!-- <script type="text/javascript" src="../js/bootstrap.stats.js"></script> -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <title>Estadísticas</title>
@@ -33,12 +33,11 @@
             <li class="nav-item">
               <a class="nav-link" href="accountmanagement.html"> Gestionar Cuenta </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="logout.html">Cerrar Sesión</a>
-            </li>
           </ul>
         </div>
       </nav>
+
+
 
       <div class="container">
         <h1>Estadísticas</h1>
@@ -48,37 +47,48 @@
           </script></button>
         </div>
         <h1>:</h1>
+
+        <script>
+         $(document).ready(function(){
+            $("#login").click(function(){
+                $('table tbody').empty();
+                $.get("http://localhost:8080/dsaApp/usermanager/users/" + $("#user").val(), function(Object, status) {
+                    for (var i = 0; i < 1; i++) {
+                        $("table").append("<tr><td>"+Object.username+ "</td><td>"+Object.password+"</td><td>"+Object.attack+"</td><td>"+Object.defense+"</td><td>"+Object.health+"</td><td>"+Object.money+"</td><td>"+Object.pieces+"</td><td>"+Object.screen+"</td></tr>");}
+                });
+            });
+        });
+        </script>
+        <div class="input-group form-group">
+          <input type="text" class="username" id="user" placeholder="Nombre de usuario"  name="username" required>
+        </div>
+        <div class="form-group">
+          <button type="button" name="button" id="login" class="btn login_btn">Buscar</button>
+        </div>
         <br>
         <br>
-        <table class="table table-primary table-striped">
+
+        <div class="tables">
+          <table class="table">
           <thead>
           <tr>
-            <th>Vida</th>
-            <th>Defensa</th>
-            <th>Ataque</th>
-            <th>Dinero</th>
-            <th>Piezas</th>
-            <th>Pantalla</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Attack</th>
+            <th>Defense</th>
+            <th>Health</th>
+            <th>Money</th>
+            <th>Pieces</th>
+            <th>Screen</th>
+
           </tr>
           </thead>
           <tbody>
-
-          <tr class="table-primary">
-
-          </tr>
-          <tr class="table-light">
-
-          </tr>
-          <tr class="table-primary">
-
-          </tr>
-          <tr class="table-light">
-          </tr>
-
           </tbody>
         </table>
       </div>
 
+  </div>
 
   </body>
 </html>

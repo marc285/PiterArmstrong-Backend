@@ -1,17 +1,13 @@
 var BASE_URI="http://localhost:8080/dsaApp/"
 
-function mystats(){
-$.ajax({
-            url: BASE_URI.concat("usermanager/getEstadisticas"),
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-               for (var i = 0; i < data.length; i++)
-                {$("table").append("<tr><td>"+ data[i].vida+"</td><td>"+ data[i].defensa+"</td><td>"+ data[i].ataque+"</td><td>"+ data[i].dinero+"</td><td>"+ data[i].piezas+"</td><td>"+ data[i].pantalla+"</td></tr>");}
-                };
-                 error: function (e) {
-                 // log error in browser
-                console.log(e.message);
-            }
-        });
-    }
+$(document).ready(function(){
+             $("#login").click(function(){
+                 $('table').empty();
+                 $.get("http://localhost:8080/dsaApp/usermanager/users/" + $(".username").val() +, function(data, status) {
+                     for (var i = 0; i < data.length; i++) {
+                         $("table").append("<tr><td>"+data[i].attack+ "</td><td>"+data[i].defense+"</td><td>"+data[i].health+"</td><td>"+data[i].money+"</td><td>"+data[i].pieces+"</td><td>"+data[i].screen+"</td><td>"+data[i].username+"</td></tr>");
+                         }
+                 });
+             });
+         });
+
